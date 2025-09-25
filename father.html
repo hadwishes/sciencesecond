@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار العلوم - الصف السادس</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            line-height: 1.6;
+            color: #333;
+            direction: rtl;
+            text-align: right;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #4a5568;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #718096;
+            font-size: 1.1rem;
+        }
+
+        /* الشاشة الرئيسية */
+        .start-screen {
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .start-screen h2 {
+            color: #4a5568;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .quiz-info {
+            background: #f7fafc;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border-right: 5px solid #4299e1;
+        }
+
+        .quiz-info h3 {
+            color: #4a5568;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4299e1, #3182ce);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(66, 153, 225, 0.3);
+        }
+
+        /* شاشة الاختبار */
+        .quiz-screen {
+            display: none;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .progress-info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4299e1, #3182ce);
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .timer {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1.3rem;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .timer.warning {
+            background: #feb2b2;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .question-container {
+            background: #f7fafc;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border-right: 5px solid #4299e1;
+        }
+
+        .question-image {
+            max-width: 100%;
+            max-height: 250px;
+            width: auto;
+            height: auto;
+            display: block;
+            margin: 0 auto 20px auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .question-number {
+            color: #718096;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 25px;
+            line-height: 1.8;
+        }
+
+        .choices-container {
+            display: grid;
+            gap: 15px;
+        }
+
+        .choice {
+            background: white;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            position: relative;
+            font-size: 1.1rem;
+        }
+
+        .choice:hover {
+            border-color: #4299e1;
+            background: #ebf8ff;
+            transform: translateX(-5px);
+        }
+        
+        .choice-image {
+            height: 80px;
+            width: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .choice.correct {
+            border-color: #48bb78;
+            background: #f0fff4;
+            color: #22543d;
+        }
+
+        .choice.wrong {
+            border-color: #f56565;
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .choice.disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .choice-letter {
+            background: #4299e1;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-left: 15px;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .choice.correct .choice-letter {
+            background: #48bb78;
+        }
+
+        .choice.wrong .choice-letter {
+            background: #f56565;
+        }
+
+        /* نافذة النتيجة */
+        .result-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .result-popup {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            margin: 20px;
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .result-popup.correct {
+            border-top: 8px solid #48bb78;
+        }
+
+        .result-popup.wrong {
+            border-top: 8px solid #f56565;
+        }
+
+        .result-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .result-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .explanation {
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: right;
+            border-right: 4px solid #4299e1;
+        }
+
+        /* شاشة النتائج */
+        .results-screen {
+            display: none;
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 30px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #4299e1, #3182ce);
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .results-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .result-card {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .result-card h4 {
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+
+        .result-card .number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #4299e1;
+        }
+
+        .wrong-answers {
+            text-align: right;
+            margin-top: 30px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .wrong-answers h3 {
+            color: #4a5568;
+            margin-bottom: 20px;
+        }
+
+        .wrong-answer-item {
+            background: #fed7d7;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-right: 4px solid #f56565;
+        }
+
+        .wrong-answer-item .question {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .wrong-answer-item .correct-answer {
+            color: #22543d;
+            font-weight: 500;
+        }
+
+        /* تصميم متجاوب */
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+                border-radius: 15px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .quiz-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .timer {
+                order: -1;
+            }
+
+            .question-text {
+                font-size: 1.2rem;
+            }
+
+            .choice {
+                padding: 15px 20px;
+            }
+
+            .score-circle {
+                width: 150px;
+                height: 150px;
+                font-size: 2rem;
+            }
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>اختبار العلوم - الصف السادس</h1>
+            <p>تدريبات 1446 على اختبارات نافس</p>
+        </div>
+
+        <div class="start-screen" id="startScreen">
+            <h2>مرحباً بك في اختبار العلوم</h2>
+            
+            <div class="quiz-info">
+                <h3>معلومات الاختبار:</h3>
+                <div class="info-item">
+                    <span>عدد الأسئلة:</span>
+                    <strong id="totalQuestionsValue"></strong>
+                </div>
+                <div class="info-item">
+                    <span>الوقت المحدد لكل سؤال:</span>
+                    <strong>60 ثانية</strong>
+                </div>
+                <div class="info-item">
+                    <span>نوع الأسئلة:</span>
+                    <strong>اختيار من متعدد</strong>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" id="startButton">ابدأ الاختبار</button>
+        </div>
+
+        <div class="quiz-screen" id="quizScreen">
+            <div class="quiz-header">
+                <div class="progress-info">
+                    <span id="questionCounter"></span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+                <div class="timer" id="timer">01:00</div>
+            </div>
+
+            <div class="question-container" id="questionContainer">
+                <div class="question-number" id="questionNumber"></div>
+                <div class="question-text" id="questionText"></div>
+            </div>
+
+            <div class="choices-container" id="choicesContainer">
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-secondary" onclick="skipQuestion()">تخطي السؤال</button>
+            </div>
+        </div>
+
+        <div class="results-screen" id="resultsScreen">
+            <h2>انتهى الاختبار!</h2>
+            
+            <div class="score-circle" id="scoreCircle">
+                <div>
+                    <div id="scorePercentage"></div>
+                    <div style="font-size: 1rem;">النتيجة</div>
+                </div>
+            </div>
+
+            <div class="results-summary">
+                <div class="result-card">
+                    <h4>الإجابات الصحيحة</h4>
+                    <div class="number" id="correctCount"></div>
+                </div>
+                <div class="result-card">
+                    <h4>الإجابات الخاطئة</h4>
+                    <div class="number" id="wrongCount"></div>
+                </div>
+                <div class="result-card">
+                    <h4>الزمن الإجمالي</h4>
+                    <div class="number" id="totalTime"></div>
+                </div>
+            </div>
+
+            <div class="wrong-answers" id="wrongAnswersSection">
+                <h3>الأسئلة الخاطئة:</h3>
+                <div id="wrongAnswersList"></div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="restartQuiz()">إعادة الاختبار</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="result-overlay" id="resultOverlay">
+        <div class="result-popup" id="resultPopup">
+            <div class="result-icon" id="resultIcon"></div>
+            <div class="result-text" id="resultText"></div>
+            <div class="explanation" id="explanation" style="display: none;"></div>
+        </div>
+    </div>
+    
+    <audio id="correctSound" src="correct.mp3" preload="auto"></audio>
+    <audio id="wrongSound" src="wrong.mp3" preload="auto"></audio>
+
+    <script>
+        const questions = [
+            {"id":1,"question":"الشكل يوضح إحدى الخلايا المتواجدة في النباتات، ما الوظيفة التي تقوم بها؟","choices":["الدعامة","البناء الضوئي","تخزين الغذاء","النقل"],"answerIndex":1,"explain":"البلاستيدات الخضراء مسؤولة عن عملية البناء الضوئي", "image": "q1.jpeg"},
+            {"id":2,"question":"من أمثلة مملكة الطلائعيات:","choices":["البراميسيوم","عفن الخبز","البنسليوم","الخميرة"],"answerIndex":0,"explain":"البراميسيوم من الطلائعيات الشبيهة بالحيوانات", "image": null},
+            {"id":3,"question":"الضفادع والسحالي تنتمي إلى طائفتين مختلفتين ما هما على الترتيب؟","choices":["البرمائيات-الزواحف","الزواحف-الثدييات","البرمائيات-الثدييات","الزواحف-البرمائيات"],"answerIndex":0,"explain":"الضفادع من البرمائيات والسحالي من الزواحف", "image": null},
+            {"id":4,"question":"تتميز مملكة الفطريات عن مملكة النباتات بأنها:","choices":["تمتلك جدار خلوي يحيط بخلاياها","تحصل على غذائها من كائنات أخرى","لا تستطيع الحركة من مكان لآخر","ليس لها أعضاء حس حقيقية"],"answerIndex":1,"explain":"الفطريات محللة تحصل على غذائها من الكائنات الأخرى", "image": null},
+            {"id":5,"question":"أي مما يلي يمثل عدد الطوائف في مجموعة الفقاريات؟","choices":["5","6","7","8"],"answerIndex":0,"explain":"الفقاريات تضم 5 طوائف: الأسماك والبرمائيات والزواحف والطيور والثدييات", "image": null},
+            {"id":6,"question":"عفن الخبز أحد المخلوقات الحية الدقيقة فإلى أي المجموعات التالية ينتمي؟","choices":["البكتيريا","الفيروسات","الطلائعيات","الفطريات"],"answerIndex":3,"explain":"عفن الخبز من الفطريات", "image": null},
+            {"id":7,"question":"أي من التفسيرات التالية يبين كيفية وصول الماء من التربة إلى الأوراق في الأشجار العالية:","choices":["سيقان النبات بها خلايا الكامبيوم","جذور النبات تدفع الماء لأعلى","ساق النبات مغطى بطبقة شمعية","عملية النّتح تسبب سحب الماء لأعلى"],"answerIndex":3,"explain":"النتح يخلق ضغطاً سالباً يساعد في سحب الماء لأعلى", "image": null},
+            {"id":8,"question":"أي مما يلي يصنف من أشباه النباتات ويتبع الطلائعيات؟","choices":["الصنوبر","الطحالب الحمراء","الأميبا","العفن الغروي"],"answerIndex":1,"explain":"الطحالب الحمراء من أشباه النباتات في مملكة الطلائعيات", "image": null},
+            {"id":9,"question":"الخنفساء والحلزون تنتميان لنفس المجموعة وذلك لأنهما يتشاركان في:","choices":["درجة حرارتها ثابتة","إرضاع الصغار","الشعر الكثيف","عدم وجود عمود فقري"],"answerIndex":3,"explain":"كلاهما من اللافقاريات", "image": null},
+            {"id":10,"question":"تمتص النباتات الطاقة من ضوء الشمس وتتفاعل مع مادة الكلوروفيل الموجودة في:","choices":["البلاستيدات الخضراء","الميتوكندريا","الفجوة العصارية","النواة"],"answerIndex":0,"explain":"الكلوروفيل موجود في البلاستيدات الخضراء", "image": null},
+            {"id":11,"question":"لا تصنف الفيروسات ضمن الممالك الست لأنها:","choices":["تتكاثر لا جنسياً","لا تقوم بعمليات الحياة الأساسية","تسبب الأمراض","تنتقل بطرق كثيرة"],"answerIndex":1,"explain":"الفيروسات لا تقوم بعمليات الحياة الأساسية بمفردها", "image": null},
+            {"id":12,"question":"تمتاز الحزازيات بقصر طولها لأنها:","choices":["لا تحتوي على أغصان","ليس لها أوراق","بلا أوعية نقل","توجد بها الثمار"],"answerIndex":2,"explain":"عدم وجود أوعية النقل يحد من نمو الحزازيات", "image": null},
+            {"id":13,"question":"ما الصفة المشتركة بين مملكة البدائيات ومملكة البكتيريا؟","choices":["تعيشان في درجات الحرارة المرتفعة فقط","مخلوقات حية عديدة الخلايا","كلاهما ضار ويسبب العديد من الأمراض","تفتقر أجسامها إلى الميتوكندريا"],"answerIndex":3,"explain":"كلاهما يفتقر للميتوكندريا", "image": null},
+            {"id":14,"question":"كيف يتم التكاثر الخضري؟","choices":["نتوء من جسم المخلوق","خلية تنقسم إلى خليتين","جزء ينمو من النبات","تخصيب البويضة"],"answerIndex":2,"explain":"التكاثر الخضري يحدث عندما ينمو جزء من النبات ليكون نباتاً جديداً", "image": null},
+            {"id":15,"question":"من أمثلة الحيوانات الفقارية:","choices":["قنديل البحر","السمكة","الفراشة","اليعسوب"],"answerIndex":1,"explain":"السمكة من الفقاريات لأنها تمتلك عمود فقري", "image": null},
+            {"id":16,"question":"أي المصطلحات التالية يعبر عن مفهوم العلم الذي يهتم بدراسة الكائنات الحية وصفاتها وتقسيمها وخصائصها؟","choices":["علم الخلية","علم التصنيف","علم السلوك","علم الوراثة"],"answerIndex":1,"explain":"علم التصنيف يهتم بتصنيف الكائنات الحية", "image": null},
+            {"id":17,"question":"ما البقع التي تبدو على ثمار البرتقال عند فسادها؟","choices":["خميرة","فطر","فيروس","بكتيريا"],"answerIndex":1,"explain":"البقع على الثمار الفاسدة عادة ما تكون فطريات", "image": "q17.png"},
+            {"id":18,"question":"أي مما يأتي يصف التكاثر في حيوان الهيدرا الموضح في الصورة؟","choices":["تكاثر لا جنسي-تبرعم","تكاثر جنسي-تبرعم","تكاثر لا جنسي-انشطار","تكاثر جنسي-تجدد"],"answerIndex":0,"explain":"الهيدرا تتكاثر لا جنسياً بالتبرعم", "image": "q18.png"},
+            {"id":19,"question":"أي الحيوانات الآتية تصنف ضمن فصيلة واحدة؟","choices":["سمكة-روبيان-حوت","كلب-قطة-سحلية","عنكبوت-فأر-ضفدع","حمار-حصان-حمار وحشي"],"answerIndex":3,"explain":"الحمار والحصان وحمار الوحشي من نفس الفصيلة", "image": null},
+            {"id":20,"question":"يحتاج النبات إلى السكر الناتج عن عملية البناء الضوئي. التركيب المسؤول عن نقله داخل النبات؟","choices":["اللحاء","القشرة","الخشب","الكامبيوم"],"answerIndex":0,"explain":"اللحاء مسؤول عن نقل السكر في النباتات", "image": null},
+            {"id":21,"question":"أي العبارات التالية تصف التكاثر اللاجنسي؟","choices":["عدد الآباء: ٢","الأبناء يشبهون الآباء تماماً","يوجد خلط للصفات","الأبناء يشبهون الآباء تقريباً"],"answerIndex":1,"explain":"في التكاثر اللاجنسي الأبناء متطابقون مع الآباء", "image": null},
+            {"id":22,"question":"معظم أوراق النباتات مسطحة وعريضة من أجل:","choices":["إعطاء مظهر رائع وجميل للنباتات","تكوين الظل للمخلوقات الحية الأخرى","امتصاص أكبر كمية من ضوء الشمس","جذب الحشرات والطيور لتلقيح النباتات"],"answerIndex":2,"explain":"الأوراق العريضة تزيد من مساحة امتصاص ضوء الشمس", "image": null},
+            {"id":23,"question":"ماذا تمثل أسماك (الراية) في بيئتها؟","choices":["جماعة حيوية","نظاماً بيئياً","التعايش","عاملاً محدداً"],"answerIndex":0,"explain":"مجموعة من نفس النوع في بيئة واحدة تسمى جماعة حيوية", "image": "23.png"},
+            {"id":24,"question":"كيف يتجنب طائران مختلفان يعيشان في الموطن البيئي نفسه التنافس في الغذاء؟","choices":["الهجرة من الموطن البيئي","التكافل مع طيور أخرى","التعايش مع نقص الغذاء","تنويع مصادر الغذاء"],"answerIndex":3,"explain":"تنويع مصادر الغذاء يقلل من التنافس", "image": null},
+            {"id":25,"question":"سأل معلم العلوم الطالب (أحمد) عن سبب غيابه يوم أمس فقال: 'اضطررت للذهاب إلى المستشفى بسبب احتقان في حلقي، ووصف لي الطبيب مضادا حيويا للبكتيريا'. ما نوع العلاقة بين البكتيريا وأحمد؟","choices":["تنافس","تعايش","تطفل","تكافل"],"answerIndex":2,"explain":"البكتيريا المسببة للمرض تتطفل على الإنسان", "image": null},
+            {"id":26,"question":"أي أنواع النباتات ينتج بذورا قاسية في مخاريط؟","choices":["غير البذرية","المعراة البذور","غير الوعائية","المغطاة البذور"],"answerIndex":1,"explain":"", "image": null},
+            {"id":27,"question":"يصنف الدلفين من الفقاريات، ويتبع لطائفة:","choices":["الأسماك الغضروفية","الثدييات المائية","الأسماك العظمية","الأسماك الفكية"],"answerIndex":1,"explain":"", "image": null},
+            {"id":28,"question":"ما العبارة التي تصف التعاقب الثانوي مقارنة بالتعاقب الأولي في النظام البيئي؟","choices":["يبدأ بصخور جرداء","النوع الرائد هو الأشنات","يحتاج إلى وقت أقل","غياب العناصر الأولية"],"answerIndex":2,"explain":"", "image": null},
+            {"id":29,"question":"في أي مراحل التعاقب الأولي تنمو النباتات الصغيرة والأعشاب؟","choices":["المجتمع الأولي","مجتمع قائم","المجتمع الوسيط","مجتمع الذروة"],"answerIndex":2,"explain":"", "image": null},
+            {
+                "id": 30,
+                "question": "أي مما يأتي يعد من مظاهر تموه السحلية؟",
+                "choices": ["q30_1.png", "q30_2.png", "q30_3.png", "q30_4.png"],
+                "answerIndex": 0,
+                "explain": "الصورة الأولى تظهر سحلية متخفية بلون بيئتها.",
+                "choiceType": "image"
+            },
+            {"id":31,"question":"أي الدول الآتية يمكن أن يكون فيها معدل تبخر المياه أكبر في موسم الصيف؟","choices":["الكويت (٤٥ درجة)","فرنسا (٢٤ درجة)","الأردن (٢٠ درجة)","روسيا (٥٤ درجة)"],"answerIndex":3,"explain":"روسيا لديها أعلى متوسط درجة حرارة (٥٤)، مما يؤدي إلى أكبر معدل تبخر.", "image": "31.png"},
+            {"id":32,"question":"أي من التكيفات الآتية يعد من التكيفات التركيبية؟","choices":["وجود الفرو لدى الحيوانات","تنتقل الوعول في جماعات","خروج الحيوانات الصحراوية ليلا","معيشة بعض الدببة حالة البيات الشتوي"],"answerIndex":0,"explain":"الفرو جزء من تركيب الجسم.", "image": null},
+            {"id":33,"question":"ما العلاقة التي تنشأ بين البكتيريا وجذور نبات البقوليات؟","choices":["تبادل منفعة","تكيف سلوكي","تعايش","تطفل"],"answerIndex":0,"explain":"البكتيريا تثبت النيتروجين للنبات، والنبات يوفر مأوى للبكتيريا.", "image": null},
+            {"id":34,"question":"ما نوع العلاقة الموضحة في الصورة بين الطيور والغزال؟","choices":["افتراس","تطفل","تعايش","تبادل منفعة"],"answerIndex":3,"explain":"الطيور تأكل الحشرات عن ظهر الغزال، فكلاهما يستفيد.", "image": "34.png"},
+            {"id":35,"question":"تسبب انخفاض معدل الأمطار إلى جفاف أحد المستنقعات الذي أدى بدوره إلى انخفاض عدد البعوض. المطر في هذه الحالة يسمى:","choices":["الإطار البيئي","السعة التحملية","العامل الحيوي","العامل المحدد"],"answerIndex":3,"explain":"العامل المحدد هو أي عامل يحد من نمو الجماعة الحيوية.", "image": null},
+            {"id":36,"question":"ما فائدة الطبقة الشمعية على ساق نبات الصبار؟","choices":["تمنع أكلات الأعشاب من تناولها","تمتص ماء المطر بسرعة","تخلص النبات من الماء الزائد","تمنع النبات من فقدان الماء"],"answerIndex":3,"explain":"الطبقة الشمعية تقلل من عملية التبخر.", "image": null},
+            {"id":37,"question":"الشكل يعبر عن مراحل التعاقب البيئي، أي المراحل تمثلها الأرقام ١ و ٤ و ٦ على التوالي؟","choices":["بداية تكون تربة - نباتات صغيرة وأعشاب - أشنات و حزازيات","صخور جرداء - أشجار وشجيرات صغيرة - نباتات صغيرة وأعشاب","بداية تكون تربة - أشنات وحزازيات - أشجار الغابة","صخور جرداء - نباتات صغيرة وأعشاب - أشجار الغابة"],"answerIndex":3,"explain":"التعاقب يبدأ بصخور جرداء، ثم تنمو نباتات صغيرة وأعشاب، ثم أشجار الغابة.", "image": "37.png"},
+            {"id":38,"question":"لكل طائر من الطيور التي في الصورة منقار مميز مختلف عن الآخر، أي من هذه الطيور يمتص الرحيق من أزهار قمم الأشجار في الغابات المطيرة؟","choices":["الطائر ذو المنقار الرفيع والطويل (١)","الطائر ٢","الطائر ٣","الطائر ٤"],"answerIndex":0,"explain":"المنقار الرفيع والطويل مناسب لامتصاص الرحيق.", "image": "38.png"},
+            {"id":39,"question":"ما العنصر الذي تستهلكه الحيوانات أثناء عملية التنفس؛ للحصول على الطاقة؟","choices":["الهيدروجين","النيتروجين","الكربون","الأوكسجين"],"answerIndex":3,"explain":"الأكسجين ضروري لعملية التنفس الخلوي.", "image": null},
+            {"id":40,"question":"يكون تدوير المواد اللازمة لحياة المخلوقات الحية على وجه الأرض من خلال دورة كل من:","choices":["النيتروجين، الماء، الهواء","الماء، الهواء، التراب","الماء، الكربون، النيتروجين","الكربون، التراب، الماء"],"answerIndex":2,"explain":"دورات الماء والكربون والنيتروجين هي الدورات البيوجيوكيميائية الرئيسية.", "image": null},
+            {"id":41,"question":"أي العبارات الآتية تمثل عمليات حيوية تحدث ضمن دورة الكربون؟","choices":["تنفس - بناء ضوئي - تبخر","بناء ضوئي - تبخر - تكثف","تنفس - بناء ضوئي - تحلل","بناء ضوئي - تحلل - تكثف"],"answerIndex":2,"explain":"التنفس والبناء الضوئي والتحلل عمليات أساسية في دورة الكربون.", "image": "41.png"},
+            {"id":42,"question":"أيها النتائج الآتية تحدث عند القضاء على جميع أنواع البكتيريا في دورة النيتروجين؟","choices":["زيادة في بكتيريا الهواء","ضعف دورة النيتروجين في الطبيعة","زيادة في خصوبة الأراضي","نقصان في الغطاء المائي"],"answerIndex":1,"explain":"البكتيريا ضرورية لتثبيت وتحويل النيتروجين.", "image": "42.png"},
+            {"id":43,"question":"أي الخيارات التالية لا يصنف من ضمن المواد؟","choices":["الهواء","الماء","الرمل","الحرارة"],"answerIndex":3,"explain":"الحرارة شكل من أشكال الطاقة وليست مادة.", "image": null},
+            {"id":44,"question":"أي من خواص المادة التالية يمكن قياسها؟","choices":["السكر أبيض اللون","طعم الأرز مالح","مساحة المدرسة","الشمع ناعم الملمس"],"answerIndex":2,"explain":"المساحة هي خاصية فيزيائية قابلة للقياس.", "image": null},
+            {"id":45,"question":"تمتص النباتات الطاقة من ضوء الشمس وتتفاعل مع مادة الكلوروفيل في:","choices":["الميتوكندريا","البلاستيدات الخضراء","الفجوة العصارية","النواة"],"answerIndex":1,"explain":"الكلوروفيل يوجد في البلاستيدات الخضراء.", "image": null},
+            {"id":46,"question":"لعب كلاب المنازل بالكرات الهوائية تعتبر صفة:","choices":["غريزية","متنحية","مكتسبة","وراثية"],"answerIndex":2,"explain":"هذا سلوك متعلم وليس موروثًا.", "image": null},
+            {"id":47,"question":"طبقة صلبة تحمي الخلايا النباتية من الخارج.","choices":["الغشاء الخلوي","الجدار الخلوي","النسيج الطلائي","الغشاء البلازمي"],"answerIndex":1,"explain":"الجدار الخلوي يوفر الحماية والدعامة للخلية النباتية.", "image": null},
+            {"id":48,"question":"رائد فضاء كتلته على الأرض ٦٠ كجم، فكم تكون كتلته على سطح القمر؟","choices":["٦ كجم","١٠ كجم","٣٠ كجم","٦٠ كجم"],"answerIndex":3,"explain":"الكتلة ثابتة لا تتغير بتغير المكان، بينما الوزن يتغير.", "image": "48.png"},
+            {"id":49,"question":"إذا كان طول وعرض البلاطة الواحدة ٢ سم، فما المساحة الكلية للأرضية المكونة من ٦x٥ بلاطات؟","choices":["٦٠ سم²","١٠٠ سم²","١٢٠ سم²","٢٤٠ سم²"],"answerIndex":2,"explain":"الطول الكلي ١٢ سم (٦×٢) والعرض الكلي ١٠ سم (٥×٢). المساحة = ١٢٠ سم².", "image": "49.png"},
+            {"id":50,"question":"أظهر الميزان أن كتلة الصندوق تبلغ ٢٠٠. أي الخيارات التالية تمثل الكتلة بوحدتها القياسية؟","choices":["٢٠ كجم","٢٠٠ ملليمتر","٢٠٠ جرام","٢٠٠ نيوتن"],"answerIndex":2,"explain":"الميزان يقيس الكتلة، والجرام وحدة قياس للكتلة.", "image": "50.png"},
+            {
+                "id": 51,
+                "question": "أي الأجسام المغمورة في الماء تكون كثافته أكبر من كثافة الماء؟",
+                "choices": ["q51_1.png", "q51_2.png", "q51_3.png", "q51_4.png"],
+                "answerIndex": 2,
+                "explain": "الجسم يغوص إذا كانت كثافته أكبر من كثافة السائل.",
+                "choiceType": "image"
+            },
+            {"id":52,"question":"ما قيمة حجم المكعب الذي أبعاده ١٠سم، ٨سم، ٥سم؟","choices":["٤٠ سم³","٨٠ سم³","١٣٠ سم³","٤٠٠ سم³"],"answerIndex":3,"explain":"الحجم = ١٠ × ٨ × ٥ = ٤٠٠ سم³.", "image": "52.png"},
+            {"id":53,"question":"ما الوحدة التي يتم استخدامها لقياس الوزن بشكل صحيح؟","choices":["جرام","نيوتن","كيلو جرام","لتر"],"answerIndex":1,"explain":"الوزن هو قوة تقاس بالنيوتن، أما الكيلوجرام فهو وحدة كتلة.", "image": null},
+            {"id":54,"question":"أي من الأدلة التالية يشير إلى أن التغير الذي حدث هو تغير كيميائي؟","choices":["تغير في شكل المادة","تغير في حجم المادة","تكون راسب أو تصاعد الغازات","تغير حالة المادة من سائل لصلب"],"answerIndex":2,"explain":"تكون مادة جديدة (راسب أو غاز) دليل على تغير كيميائي.", "image": null},
+            {"id":55,"question":"أي الخيارات التالية هو النتيجة الصحيحة؟ (جدول يظهر المادة ١ تغير لونها وحجمها، والمادة ٢ تغير وزنها وحجمها)","choices":["المادة (١) حدث لها تغير كيميائي","المادة (١) لم يحدث لها تغير كيميائي","المادة (٢) حدث لها تغير كيميائي","المادة (٢) لم يحدث لها تغير كيميائي"],"answerIndex":0,"explain":"تغير اللون دليل قوي على حدوث تغير كيميائي.", "image": "55.png"},
+            {"id":56,"question":"أي من التغيرات التالية تعد مثالا صحيحا لتغير فيزيائي يحدث بفعل الحرارة؟","choices":["ظهور العفن على الخبز","تغير لون الملابس","تغير طعم الحليب","تبخر مياه البحيرة"],"answerIndex":3,"explain":"التبخر هو تغير في الحالة الفيزimismoائية للمادة.", "image": null},
+            {"id":57,"question":"صنف مجموعة من الطلاب احتراق قطعة خشب وتحولها إلى رماد كتغير كيميائي، أي الخيارات التالية تؤيد إجابتهم؟","choices":["زاد حجم قطعة الخشب","زادت كتلة قطعة الخشب","أخذت قطعة الخشب مساحة أقل","ظهرت مادة جديدة تختلف عن الخشب"],"answerIndex":3,"explain":"الاحتراق ينتج مواد جديدة (رماد، غازات).", "image": null},
+            {"id":58,"question":"أي مما يلي يصف حالة جزيئات الماء عند تبريدها؟","choices":["تتباطأ حركة الجزيئات","تتمدد الجزيئات","تبقى الجزيئات ثابتة في مكانها","يزيد عدد الجزيئات"],"answerIndex":0,"explain":"التبريد يقلل من الطاقة الحركية للجزيئات فتتباطأ حركتها.", "image": null},
+            {"id":59,"question":"إذا أحضرت قطع الثلج ثم عرضتها للحرارة كما في الشكل فإن حالتها تتغير كالتالي:","choices":["سائل - غاز - صلب","غاز - سائل - صلب","صلب - غاز - سائل","صلب - سائل - غاز"],"answerIndex":3,"explain":"ثلج (صلب) ينصهر إلى ماء (سائل) ثم يتبخر إلى بخار ماء (غاز).", "image": "59.png"},
+            {"id":60,"question":"تراكم قطرات الماء على أوراق النبات يدل على تغير الماء من الحالة:","choices":["الغازية إلى السائلة","السائلة إلى الغازية","الصلبة إلى السائلة","السائلة إلى الصلبة"],"answerIndex":0,"explain":"هذه عملية التكثف.", "image": "60.png"},
+            {"id":61,"question":"أي الخيارات التالية تصف التغيرات التي تحدث للمادة في المخطط المجاور؟ (دقائق متقاربة تتحول إلى دقائق متباعدة)","choices":["أصبحت الدقائق أكثر تقارباً","اكتسبت طاقة حرارية وأصبحت أكثر حركة وتباعداً","فقدت طاقة حرارية","لم تتغير"],"answerIndex":1,"explain":"التسخين يزيد الطاقة الحركية للجزيئات فتتباعد.", "image": "61.png"},
+            {"id":62,"question":"أي العمليات التالية تكمل المخطط المجاور بطريقة صحيحة؟ (سائل + حرارة -> ؟)","choices":["تبخر","تكثف","انصهار","تجمد"],"answerIndex":0,"explain":"السائل يتحول إلى غاز بالتبخر عند اكتساب حرارة.", "image": "62.png"},
+            {"id":63,"question":"أي الخيارات التالية يصف ما يحدث لجزيئات المادة الغازية عندما تتكثف؟","choices":["تتحرك في مكانها","تتباعد عن بعضها","تبقى ساكنة","تتقارب من بعضها"],"answerIndex":3,"explain":"التكثف هو تحول الغاز إلى سائل، حيث تتقارب الجزيئات.", "image": null},
+            {"id":64,"question":"يسمى تحول المادة السائلة إلى الحالة الصلبة:","choices":["التبخر","التكثف","التجمد","التبريد"],"answerIndex":2,"explain":"هذا تعريف التجمد.", "image": null},
+            {"id":65,"question":"قام سلطان بإضافة الرمل إلى الماء، أي الخيارات التالية هي التسمية الصحيحة للمادة الناتجة؟","choices":["عنصر","مخلوط","مركب","محلول"],"answerIndex":1,"explain":"الرمل والماء يكونان مخلوط غير متجانس.", "image": "65.png"},
+            {"id":66,"question":"يمكننا تعريف المخلوط على أنه خلط مادتين أو أكثر بحيث...","choices":["تتغير صفات المادتين","تنتج مادة جديدة","لا يمكن فصلهما بالطرق الفيزيائية","تحتفظ كل مادة بصفاتها"],"answerIndex":3,"explain":"في المخلوط، تحتفظ كل مادة بخصائصها الأصلية.", "image": null},
+            {"id":67,"question":"أي المخاليط التالية يتكون نتيجة خلط نوعين من العناصر أحدهما فلز؟","choices":["مكسرات","سبيكة","ماء البحر","عصير الفاكهة"],"answerIndex":1,"explain":"السبيكة هي مخلوط من فلزات أو فلز ولا فلز.", "image": null},
+            {"id":68,"question":"جميع العبارات التالية تنطبق على المخلوط ما عدا:","choices":["لا تمتزج مكوناته امتزاجا تاما","يمكن ملاحظة مكوناته بالعين","تفقد مكوناته خواصه الأصلية","يمكن فصل مكوناته بالتقطير والتبخير"],"answerIndex":2,"explain":"المكونات في المخلوط لا تفقد خواصها الأصلية.", "image": null},
+            {"id":69,"question":"أي الخيارات التالية يمثل الفرق الصحيح بين المحلول والمخلوط؟","choices":["المحلول غير متجانس والمخلوط متجانس","كل من المحلول والمخلوط غير متجانس","كل من المحلول والمخلوط متجانس","المحلول متجانس والمخلوط غير متجانس"],"answerIndex":3,"explain":"المحلول هو نوع خاص من المخاليط المتجانسة.", "image": null},
+            {"id":70,"question":"أي المواد في الجدول تمثل مخاليط؟ (١: برونز، ٢: عصير، ٣: مكسرات، ٤: شاي)","choices":["١، ٢، ٣، ٤","١، ٣","٢، ٤","٣ فقط"],"answerIndex":0,"explain":"جميعها مخاليط من مواد مختلفة.", "image": "70.png"},
+            {"id":71,"question":"أي الخيارات يمكن كتابته في خانة نوع المحلول على الترتيب (سبيكة، ماء بحر، غاز طبيعي)؟","choices":["صلبة، سائل، صلبة","سائل، صلبة، سائل","صلبة، سائل، غاز","غاز، صلبة، سائل"],"answerIndex":2,"explain":"السبيكة صلب في صلب، ماء البحر صلب في سائل، الغاز الطبيعي غاز في غاز.", "image": "71.png"},
+            {"id":72,"question":"ما الطرق المناسبة لفصل مخلوط مكون من حبوب كزبرة وماء؟","choices":["الترسيب","الترشيح","التبخير","التقطير"],"answerIndex":1,"explain":"الترشيح يستخدم لفصل مادة صلبة غير ذائبة عن سائل.", "image": "72.png"},
+            {"id":73,"question":"يستخدم المغناطيس في فصل المخاليط التي تحتوي إحدى مكوناتها على:","choices":["خشب","حديد","بلاستيك","ألومنيوم"],"answerIndex":1,"explain":"المغناطيس يجذب الحديد.", "image": null},
+            {"id":74,"question":"جميع الطرق التالية تستخدم لفصل المخاليط ما عدا:","choices":["الترسيب","الترشيح","التحريك","التقطير"],"answerIndex":2,"explain":"التحريك هو لخلط المواد وليس لفصلها.", "image": null},
+            {"id":75,"question":"الشكل، يتم وصفه بتكاثر: (صورة الهيدرا تتبرعم)","choices":["جنسي - إخصاب","لاجنسي - إخصاب","جنسي - تبرعم","لاجنسي - تبرعم"],"answerIndex":3,"explain":"هذا مثال على التكاثر اللاجنسي بالتبرعم.", "image": "75.png"},
+            {"id":76,"question":"يحتوي على المعلومات الوراثية للصفة الموروثة:","choices":["النسيج العصبي","الجين","السيتوبلازم","القلب"],"answerIndex":1,"explain":"الجين هو وحدة المعلومات الوراثية.", "image": null},
+            {"id":77,"question":"أي العبارات تصف انتقال المادة عبر الغشاء البلازمي للخلية؟ (تركيز عالي في الخارج ومنخفض في الداخل)","choices":["نقل سلبي من خارج إلى داخل الخلية","نقل سلبي من داخل إلى خارج الخلية","نقل نشط من خارج إلى داخل الخلية","في حالة اتزان ولن تنتشر"],"answerIndex":0,"explain":"النقل السلبي (الانتشار) يحدث من التركيز الأعلى إلى الأقل.", "image": "77.png"},
+            {"id":78,"question":"إذا كان كلا الأبوين له غمازات (صفة سائدة)، ولكنهما يحملان جين الصفة المتنحية. أي العبارات التالية صحيح؟","choices":["يكون للأبناء جميعا غمازات","لا يشترط أن تظهر هذه الصفة في الأبناء","تظهر في الإناث فقط","هذه الصفة لا تنتقل عن طريق الوراثة"],"answerIndex":1,"explain":"هناك احتمال ٢٥٪ أن يرث الابن الجينين المتنحيين ولا تظهر عليه الصفة السائدة.", "image": null},
+            {"id":79,"question":"حدد نوع الانقسام في كل من الشكل (١) و (٢). (شكل ١: خلية -> ٤ خلايا بنصف الكروموسومات، شكل ٢: خلية -> خليتين بنفس الكروموسومات)","choices":["(١) انقسام متساوي، (٢) انقسام منصف","(١) انقسام منصف، (٢) انقسام متساوي","(١) انقسام متساوي، (٢) انقسام متساوي","(١) انقسام منصف، (٢) انقسام منصف"],"answerIndex":1,"explain":"الانقسام المنصف ينتج ٤ خلايا، والانقسام المتساوي ينتج خليتين.", "image": "79.png"},
+            {"id":80,"question":"عدد الكروموسومات في خلية جنسية في الإنسان؟","choices":["٢٣","٣٣","٤٦","٤٩"],"answerIndex":0,"explain":"الخلية الجنسية (مشيج) تحتوي على نصف عدد الكروموسومات (٢٣).", "image": null},
+            {"id":81,"question":"يتميز الانقسام المنصف عن المتساوي بأنه:","choices":["يحدث في الخلية الجنسية والجسدية","ينتج عنه أربع خلايا تحمل كلا منها نصف الكروموسومات","يسمح للخلايا بالنمو وتعويض الخلايا التالفة","ينتج عنه نواتان جديدتان متماثلتين"],"answerIndex":1,"explain":"الانقسام المنصف يختزل عدد الكروموسومات إلى النصف وينتج أربع خلايا.", "image": null},
+            {"id":82,"question":"سكر الجلوكوز + الأكسجين -> ثاني أكسيد الكربون + ماء + طاقة. تعبر المعادلة عن:","choices":["النمو","التنفس","البناء الضوئي","التكاثر"],"answerIndex":1,"explain":"هذه هي معادلة التنفس الخلوي.", "image": null},
+            {"id":83,"question":"إذا كان لدى المخلوق الحي جينات متماثلة بصفة وراثية واحدة، فإنه يكون:","choices":["هجين","نقي الصفة","متنحي","مختلط"],"answerIndex":1,"explain":"نقي الصفة يعني أن الأليلين للصفة متماثلان (AA أو aa).", "image": null},
+            {"id":84,"question":"أي أجزاء الخلية التالية ووظيفته صحيحة؟","choices":["النواة - تخزن الماء والغذاء والفضلات","السيتوبلازم - يحتوي على تراكيب الخلية ومواد كيميائية مختلفة","الفجوات - تخزن معلومات وراثية","الميتوكندريا - تمتص الطاقة الضوئية"],"answerIndex":1,"explain":"السيتوبلازم هو السائل الذي تسبح فيه العضيات.", "image": null},
+            {"id":85,"question":"أي العمليات التالية لا تحتاج إلى طاقة؟","choices":["البناء الضوئي","التنفس الهوائي","الخاصية الأسموزية","النقل النشط"],"answerIndex":2,"explain":"الخاصية الأسموزية هي نوع من النقل السلبي ولا تحتاج لطاقة.", "image": null},
+            {"id":86,"question":"تهضم الفضلات الخلوية وأجزاء الخلية التالفة بواسطة الإنزيمات التي تنتج في:","choices":["الأجسام المحللة (الليسوسومات)","البلاستيدات الخضراء","الشبكة الإندوبلازمية","الفجوات"],"answerIndex":0,"explain":"هذه هي وظيفة الليسوسومات.", "image": null},
+            {"id":87,"question":"تحمل عينا أحمد جينا وراثيا للعيون الزرقاء، ولكن يظهر أن لون عينيه أسود. بالنسبة له، تُعتبر صفة العيون الزرقاء صفة:","choices":["موروثة","متنحية","سائدة","مكتسبة"],"answerIndex":1,"explain":"الصفة التي لا تظهر بوجود صفة سائدة هي صفة متنحية.", "image": null},
+            {"id":88,"question":"إذا كانت الخلايا الجسدية لحيوان الكنغر تحوي ١٢ كروموسوما، فكم كروموسوما تحوي البويضة المخصبة (الزيجوت)؟","choices":["٦","٣","١٢","٢٤"],"answerIndex":2,"explain":"الزيجوت هو خلية جسدية ناتجة عن الإخصاب، لذا يحتوي على العدد الكامل للكروموسومات.", "image": null},
+            {"id":89,"question":"تسمى عملية الانتقال المستمر من مرحلة تكاثر جنسي إلى مرحلة تكاثر لاجنسي بعملية:","choices":["النمو والتكاثر","التلقيح","تعاقب الأجيال","الإخصاب"],"answerIndex":2,"explain":"هذا هو تعريف تعاقب الأجيال.", "image": null},
+            {"id":90,"question":"أي الطلاب استطاع كتابة التركيب الخلوي الصحيح امام جميع الوظائف؟ (فيصل: فجوة، جدار خلوي، ميتوكندريا)","choices":["محمد","فيصل","خالد","سالم"],"answerIndex":1,"explain":"إجابات فيصل صحيحة للوظائف المذكورة.", "image": "90.png"},
+            {"id":91,"question":"حسب مخطط السلالة المجاور، أي الأبناء يحمل صفة سائدة؟ (مخطط يظهر الأبناء ١ و ٣ لديهم الصفة)","choices":["١ و ٢","٢ و ٣","١ و ٣","٣ و ٤"],"answerIndex":2,"explain":"الأفراد المظللون في مخطط السلالة هم من يحملون الصفة.", "image": "91.png"},
+            {"id":92,"question":"أي العبارات التالية تعبر عن الاختلافات بين الخلية النباتية والخلية الحيوانية.","choices":["تفتقد الخلية الحيوانية للغشاء الخلوي","يقتصر وجود الرايبوسومات على الخلية النباتية","الفجوات في الخلية الحيوانية أكبر","توجد البلاستيدات الخضراء في الخلية النباتية فقط"],"answerIndex":3,"explain":"البلاستيدات الخضراء والجدار الخلوي يميزان الخلية النباتية.", "image": null},
+            {"id":93,"question":"تستطيع الميتوكندريا تزويد الخلية بالطاقة لأنها:","choices":["تقوم بعملية البناء الضوئي","تستمد طاقتها من الشمس","يحدث بداخلها التنفس الخلوي","تحوي على المادة الوراثية"],"answerIndex":2,"explain":"الميتوكندريا هي مركز التنفس الخلوي وإنتاج الطاقة.", "image": null},
+            {"id":94,"question":"من الذي اطلق على الخلايا الحية، اسم الخلية؟","choices":["ليفنهوك","روبرت هوك","روبرت براون","شلايدن"],"answerIndex":1,"explain":"روبرت هوك هو أول من شاهد الخلايا في الفلين وأطلق عليها هذا الاسم.", "image": null},
+            {"id":95,"question":"أي مما يلي يعد نسيجا ضاما؟","choices":["العضلات","الجلد","الدم","العصب"],"answerIndex":2,"explain":"الدم والعظام والغضاريف تعتبر أنسجة ضامة.", "image": null},
+            {"id":96,"question":"في الجدول بعض الصفات الوراثية لنبات البازلاء، أي منها يعد صفات سائدة نقية؟ (الصفة ١: أزهار أرجوانية AA، الصفة ٣: قرون خضراء AA)","choices":["الصفة ١ والصفة ٢","الصفة ١ والصفة ٣","الصفة ٤ والصفة ٣","الصفة ٤"],"answerIndex":1,"explain":"الصفة السائدة النقية يمثلها حرفان كبيران متماثلان (AA).", "image": "96.png"},
+            {"id":97,"question":"ماذا نسمي العملية التي تحدث لقطرة الحبر عند إضافتها إلى دورق فيه ماء؟","choices":["التمدد","النقل النشط","الانتشار","الخاصية الأسموزية"],"answerIndex":2,"explain":"انتشار جزيئات الحبر في الماء من التركيز الأعلى إلى الأقل.", "image": null},
+            {"id":98,"question":"عملية تقوم بها الخلايا لتحليل السكر واطلاق الطاقة:","choices":["الانتشار","التنفس الخلوي","البناء الضوئي","الانقسام"],"answerIndex":1,"explain":"هذا هو تعريف التنفس الخلوي.", "image": null},
+            {"id":99,"question":"يمكن للبكتيريا أن تتكاثر فيصبح عددها بالملايين خلال فترة زمنية قصيرة، ما السبب الذي يفسر ذلك؟","choices":["لأن لها أهداب وأسواط تساعدها على ذلك","لأن الخلية البكتيرية تحتوي على نواة","لأنها تعيش في ظروف بيئية قاسية","لأنها تتكاثر لا جنسياً"],"answerIndex":3,"explain":"التكاثر اللاجنسي (الانشطار الثنائي) سريع جداً.", "image": null},
+            {"id":100,"question":"أي العبارات الآتية جزء من نظرية الخلية؟","choices":["الخلايا تنتج عن خلايا موجودة","تحتوي جميع الخلايا على المركبات نفسها","جميع المخلوقات الحية عديدة الخلايا","الخلايا تكون الأنسجة والأنسجة تكون الأعضاء"],"answerIndex":0,"explain":"من مبادئ نظرية الخلية أن الخلايا الجديدة تنشأ من خلايا سابقة.", "image": null}
+        ];
+
+        // متغيرات الاختبار
+        let currentQuestionIndex, score, timeLeft, timer, startTime, answers;
+        
+        // عناصر DOM
+        let startScreen, quizScreen, resultsScreen, resultOverlay, totalQuestionsValue, questionCounter, progressFill, timerDisplay, questionNumber, questionText, choicesContainer, correctSound, wrongSound, questionContainer;
+
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            answers = [];
+            startTime = Date.now();
+            startScreen.style.display = 'none';
+            resultsScreen.style.display = 'none';
+            quizScreen.style.display = 'block';
+            showQuestion();
+        }
+
+        function showQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                showResults();
+                return;
+            }
+
+            clearInterval(timer);
+            const question = questions[currentQuestionIndex];
+            
+            const questionContentContainer = document.getElementById('questionContainer');
+            questionContentContainer.innerHTML = ''; 
+            
+            questionContentContainer.appendChild(questionNumber);
+            questionContentContainer.appendChild(questionText);
+            
+            if (question.image) {
+                const imgElement = document.createElement('img');
+                imgElement.src = question.image;
+                imgElement.className = 'question-image';
+                questionContentContainer.insertBefore(imgElement, questionText);
+            }
+
+            questionCounter.textContent = `السؤال ${currentQuestionIndex + 1} من ${questions.length}`;
+            questionNumber.textContent = `السؤال رقم ${currentQuestionIndex + 1}`;
+            questionText.textContent = question.question;
+
+            const progressPercent = ((currentQuestionIndex) / questions.length) * 100;
+            progressFill.style.width = `${progressPercent}%`;
+
+            choicesContainer.innerHTML = '';
+            question.choices.forEach((choice, index) => {
+                const choiceDiv = document.createElement('div');
+                choiceDiv.className = 'choice';
+
+                let choiceContent;
+                if (question.choiceType === 'image') {
+                    choiceContent = `<img src="${choice}" class="choice-image" alt="Choice ${index + 1}">`;
+                } else {
+                    choiceContent = `<span>${choice}</span>`;
+                }
+                
+                choiceDiv.innerHTML = `
+                    <div class="choice-letter">${String.fromCharCode(65 + index)}</div>
+                    ${choiceContent}
+                `;
+                choiceDiv.addEventListener('click', () => selectChoice(index));
+                choicesContainer.appendChild(choiceDiv);
+            });
+            
+            timeLeft = 60;
+            startTimer();
+        }
+
+        function selectChoice(choiceIndex) {
+            const question = questions[currentQuestionIndex];
+            const isCorrect = choiceIndex === question.answerIndex;
+            
+            answers.push({
+                questionIndex: currentQuestionIndex,
+                isCorrect: isCorrect
+            });
+
+            if (isCorrect) {
+                score++;
+                correctSound.play();
+            } else {
+                wrongSound.play();
+            }
+
+            const choices = document.querySelectorAll('.choice');
+            choices.forEach(choice => choice.classList.add('disabled'));
+            
+            if (isCorrect) {
+                choices[choiceIndex].classList.add('correct');
+                showResultOverlay(true, question.explain);
+            } else {
+                choices[choiceIndex].classList.add('wrong');
+                if (choices[question.answerIndex]) {
+                    choices[question.answerIndex].classList.add('correct');
+                }
+                showResultOverlay(false, question.explain);
+            }
+
+            clearInterval(timer);
+
+            setTimeout(() => {
+                hideResultOverlay();
+                nextQuestion();
+            }, isCorrect ? 1500 : 5000);
+        }
+
+        function showResultOverlay(isCorrect, explanation) {
+            const popup = document.getElementById('resultPopup');
+            const icon = document.getElementById('resultIcon');
+            const text = document.getElementById('resultText');
+            const explanationDiv = document.getElementById('explanation');
+
+            let correctChoiceText;
+            const currentQ = questions[currentQuestionIndex];
+
+            if (currentQ.choiceType === 'image') {
+                correctChoiceText = `(الصورة ${String.fromCharCode(65 + currentQ.answerIndex)})`;
+            } else {
+                correctChoiceText = currentQ.choices[currentQ.answerIndex];
+            }
+
+
+            if (isCorrect) {
+                popup.className = 'result-popup correct';
+                icon.textContent = '✓';
+                text.textContent = 'إجابة صحيحة!';
+                if (explanation && explanation.trim() !== "") {
+                    explanationDiv.style.display = 'block';
+                    explanationDiv.textContent = explanation;
+                } else {
+                    explanationDiv.style.display = 'none';
+                }
+            } else {
+                popup.className = 'result-popup wrong';
+                icon.textContent = '✗';
+                text.textContent = 'إجابة خاطئة. الصحيحة: ' + correctChoiceText;
+                if (explanation && explanation.trim() !== "") {
+                    explanationDiv.style.display = 'block';
+                    explanationDiv.textContent = explanation;
+                } else {
+                    explanationDiv.style.display = 'none';
+                }
+            }
+            resultOverlay.style.display = 'flex';
+        }
+
+        function hideResultOverlay() {
+            resultOverlay.style.display = 'none';
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                showQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function skipQuestion() {
+            answers.push({ questionIndex: currentQuestionIndex, isCorrect: false });
+            clearInterval(timer);
+            nextQuestion();
+        }
+
+        function startTimer() {
+            timerDisplay = document.getElementById('timer');
+            timerDisplay.textContent = `01:00`;
+            timerDisplay.classList.remove('warning');
+            
+            timer = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    timeUp();
+                    return;
+                }
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                if (timeLeft <= 10) {
+                    timerDisplay.classList.add('warning');
+                }
+            }, 1000);
+        }
+
+        function timeUp() {
+            wrongSound.play();
+            const question = questions[currentQuestionIndex];
+            answers.push({ questionIndex: currentQuestionIndex, isCorrect: false });
+
+            const choices = document.querySelectorAll('.choice');
+            choices.forEach(choice => choice.classList.add('disabled'));
+            if (choices[question.answerIndex]) {
+                choices[question.answerIndex].classList.add('correct');
+            }
+
+            showResultOverlay(false, 'انتهى الوقت. ' + (question.explain || ''));
+
+            setTimeout(() => {
+                hideResultOverlay();
+                nextQuestion();
+            }, 3000);
+        }
+
+        function showResults() {
+            quizScreen.style.display = 'none';
+            resultsScreen.style.display = 'block';
+
+            const totalTime = Date.now() - startTime;
+            const correctAnswers = answers.filter(a => a.isCorrect).length;
+            const percentage = questions.length > 0 ? Math.round((correctAnswers / questions.length) * 100) : 0;
+
+            document.getElementById('scorePercentage').textContent = `${percentage}%`;
+            document.getElementById('correctCount').textContent = correctAnswers.toString();
+            document.getElementById('wrongCount').textContent = (questions.length - correctAnswers).toString();
+            document.getElementById('totalTime').textContent = formatTime(totalTime);
+
+            displayWrongAnswers();
+        }
+
+        function displayWrongAnswers() {
+            const wrongAnswersSection = document.getElementById('wrongAnswersSection');
+            const wrongAnswersList = document.getElementById('wrongAnswersList');
+            const wrongOnly = answers.filter(a => !a.isCorrect);
+
+            if (wrongOnly.length === 0) {
+                wrongAnswersSection.style.display = 'none';
+                return;
+            } else {
+                wrongAnswersSection.style.display = 'block';
+            }
+            
+            wrongAnswersList.innerHTML = '';
+            wrongOnly.forEach(answer => {
+                const question = questions[answer.questionIndex];
+                if (!question) return;
+                const div = document.createElement('div');
+                div.className = 'wrong-answer-item';
+                
+                let correctDisplay = question.choices[question.answerIndex];
+                if(question.choiceType === 'image') {
+                    correctDisplay = `(الصورة ${String.fromCharCode(65 + question.answerIndex)})`;
+                }
+
+                div.innerHTML = `
+                    <div class="question">السؤال ${answer.questionIndex + 1}: ${question.question}</div>
+                    <div class="correct-answer">الإجابة الصحيحة: ${correctDisplay}</div>
+                    ${question.explain ? `<div class="explanation">${question.explain}</div>` : ''}
+                `;
+                wrongAnswersList.appendChild(div);
+            });
+        }
+        
+        function formatTime(milliseconds) {
+            const totalSeconds = Math.floor(milliseconds / 1000);
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function restartQuiz() {
+            startQuiz();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Assign DOM elements
+            startScreen = document.getElementById('startScreen');
+            quizScreen = document.getElementById('quizScreen');
+            resultsScreen = document.getElementById('resultsScreen');
+            resultOverlay = document.getElementById('resultOverlay');
+            totalQuestionsValue = document.getElementById('totalQuestionsValue');
+            questionCounter = document.getElementById('questionCounter');
+            progressFill = document.getElementById('progressFill');
+            questionNumber = document.getElementById('questionNumber');
+            questionText = document.getElementById('questionText');
+            choicesContainer = document.getElementById('choicesContainer');
+            correctSound = document.getElementById('correctSound');
+            wrongSound = document.getElementById('wrongSound');
+            questionContainer = document.getElementById('questionContainer');
+            
+            // Update question count on start screen
+            totalQuestionsValue.textContent = `${questions.length} سؤال`;
+            
+            // Attach event listeners
+            document.getElementById('startButton').addEventListener('click', startQuiz);
+            
+            resultOverlay.addEventListener('click', function(e) {
+                if (e.target === resultOverlay) {
+                    hideResultOverlay();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
